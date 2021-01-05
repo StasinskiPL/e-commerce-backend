@@ -19,6 +19,7 @@ mongoose.connect(
 
 
 app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
   res.setHeader("Content-Type", "application/json");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH");
@@ -26,6 +27,4 @@ app.use((req, res, next) => {
   next();
 });
 
-app.listen(port, () => {
-  console.log(port);
-});
+app.listen(port);
