@@ -10,6 +10,18 @@ exports.getProducts = (req, res) => {
     });
 };
 
+exports.getProductById = (req, res) => {
+  const id = req.params.id;
+
+  Product.findById(id)
+    .then((prod) => {
+      res.json({ product:prod});
+    })
+    .catch(() => {
+      res.json({ error:"not found" });
+    });
+};
+
 exports.getProductsByCat = (req, res) => {
   const category = req.params.category;
   Product.find({ category: category })

@@ -5,6 +5,8 @@ const route = express.Router();
 
 route.get("/products", ProductController.getProducts);
 
+route.get("/product/:id", ProductController.getProductById);
+
 route.get("/products/:category", ProductController.getProductsByCat);
 
 route.post("/addproduct", ProductController.postProduct);
