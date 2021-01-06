@@ -38,6 +38,7 @@ exports.postProduct = (req, res) => {
     name: req.body.name,
     description: req.body.description,
     category: req.body.category,
+    price: req.body.price,
     mainImage: req.body.mainImage,
     additionalImages: req.body.additionalImages || [],
   });
@@ -55,6 +56,7 @@ exports.editProduct = (req, res) => {
       prod.description = req.body.description;
       prod.category = req.body.category;
       prod.mainImage = req.body.mainImage;
+      prod.price = req.body.price;
       prod.additionalImages = req.body.additionalImages || [];
       prod.save();
       return res.json({ massage: "updated" });
