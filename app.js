@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const app = express();
 const port = process.env.PORT || 8080;
 
-const productRoute = require("./routes/Products");
+const route = require("./routes/route");
 
 app.use(express.json());
 
@@ -15,7 +15,7 @@ mongoose.connect(
   }
   );
   
-  app.use((req, res, next) => {
+  app.use((_, res, next) => {
     res.setHeader("Content-Type", "application/json");
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH");
@@ -25,7 +25,7 @@ mongoose.connect(
   
 
 
-  app.use("/", productRoute);
+  app.use(route);
 
 
 app.listen(port);
