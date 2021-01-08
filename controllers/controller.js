@@ -78,10 +78,9 @@ exports.connectUser = (req,res)=>{
 }
 
 exports.getUserStore = (req,res)=>{
-  const id = req.body.id;
-  
+  const id = req.params.id;
+
   User.findOne({id:id}).then((user)=>{
-    console.log(user)
    return res.status(200).json({user:user})
   }).catch(()=>{
       return res.status(400).json({error:true})
