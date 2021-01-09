@@ -90,7 +90,7 @@ exports.addUserTransation = (req,res)=>{
   const id = req.body.id;
   const transation = req.body.transation;
   User.findOne({id:id}).then(user=>{
-    user.transations = user.transations.concat(transation);
+    user.transations = [...user.transations,transation];
     user.save().then(()=>{
     return res.status(200).json({error:false, message:"successfully added transation"})
     });
