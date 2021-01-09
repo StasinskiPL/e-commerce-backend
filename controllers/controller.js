@@ -108,7 +108,7 @@ exports.addUserTransation = (req, res) => {
 
   User.findOne({ id: id })
     .then((user) => {
-      user.transations = [...user.transations, transation];
+      user.transations = [...user.transations, transation].filter(e=> e !== []);
       user.date = date;
       user.save().then(() => {
         return res
