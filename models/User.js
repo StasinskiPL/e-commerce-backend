@@ -10,6 +10,6 @@ transations:{
     type: Schema.Types.Array,
     require:true,
 }
-},{ timestamps: true })
+})
 
 module.exports = mongoose.model("User",userSchema);
