@@ -16,10 +16,10 @@ exports.getProductById = (req, res) => {
 
   Product.findById(id)
     .then((prod) => {
-      res.status(200).json({ product:prod});
+      res.status(200).json({ product: prod });
     })
     .catch(() => {
-      res.status(400).json({ error:"not found" });
+      res.status(400).json({ error: "not found" });
     });
 };
 
@@ -64,37 +64,61 @@ exports.editProduct = (req, res) => {
   });
 };
 
-
 // user
 
-exports.connectUser = (req,res)=>{
+exports.connectUser = (req, res) => {
   const id = req.body.id;
-    const user = new User({
-      id:id,
-      transation:[],
-    })
-    user.save();
-    res.status(200).json({message:"user connected"});
-}
+  const user = new User({
+    id: id,
+    transation: [],
+  });
+  user.save();
+  res.status(200).json({ message: "user connected" });
+};
 
-exports.getUserStore = (req,res)=>{
+exports.getUserStore = (req, res) => {
   const id = req.query.id;
-  User.findOne({id:id}).then((user)=>{
-   return res.status(200).json({user:user})
-  }).catch(()=>{
-      return res.status(400).json({error:true})
-  })
-}
-
-exports.addUserTransation = (req,res)=>{
-  const id = req.body.id;
-  const transation = req.body.transation;
-  User.findOne({id:id}).then(user=>{
-    user.transations = [...user.transations,transation];
-    user.save().then(()=>{
-    return res.status(200).json({error:false, message:"successfully added transation"})
+  User.findOne({ id: id })
+    .then((user) => {
+      return res.status(200).json({ user: user });
+    })
+    .catch(() => {
+      return res.status(400).json({ error: true });
     });
-  }).catch(()=>{
-    return res.status(400).json({error:true,message:"something went wrong"})
-  })
+};
+
+exports.addUserTransation = (req, res) => {
+  const id = req.body.id;
+  const itemTransation = req.body.transation;
+
+  let day = new Date().getDate();
+  let month = new Date().getMonth() + 1;
+  const year = new Date().getFullYear();
+
+  if (day < 10) day = "0" + day;
+  if (month < 10) month = "0" + month;
+
+  const date = `${day}-${month}-${year}`;
+
+  const transation = {
+    date:date,
+    products: itemTransation,
   }
+  console.log(transation)
+
+  User.findOne({ id: id })
+    .then((user) => {
+      user.transations = [...user.transations, transation];
+      user.date = date;
+      user.save().then(() => {
+        return res
+          .status(200)
+          .json({ error: false, message: "successfully added transation" });
+      });
+    })
+    .catch(() => {
+      return res
+        .status(400)
+        .json({ error: true, message: "something went wrong" });
+    });
+};
