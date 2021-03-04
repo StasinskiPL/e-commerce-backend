@@ -5,14 +5,14 @@ const jwt = require("jsonwebtoken");
 exports.register = async (req, res) => {
   const validation = schema.validate(req.body);
   if (validation.error) {
-    return res.status(400).json(validation.error);
+    return res.status(401).send(validation.error);
   }
   const { email, password } = req.body;
 
   const emailExist = await User.findOne({ email: email });
 
   if (emailExist) {
-    return res.status(400).json({ message: "Email Already Exist" });
+    res.status(400).send({ error: "Email Already Exist" });
   }
 
   const user = new User({
@@ -21,7 +21,9 @@ exports.register = async (req, res) => {
   });
   try {
     const saveUser = await user.save();
-    return res.json(saveUser);
+    const token = jwt.sign({ _id: user._id }, "MY_SECRET_KEY");
+    res.header("auth-token", token);
+    return res.json({ user: saveUser, token });
   } catch (error) {
     return res.status(400).json(error);
   }
@@ -31,14 +33,13 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {
-    return res.status(400).json({ message: "wrong email or password" });
+    return res.status(400).send({ message: "wrong email or password" });
   }
   try {
     await user.comparePassword(password);
     const token = jwt.sign({ _id: user._id }, "MY_SECRET_KEY");
     res.header("auth-token", token).send({ token });
-    return res.json(user);
   } catch (error) {
-    return res.status(400).json({ message: "wrong email or password" });
+    return res.status(400).send({ message: "wrong email or password" });
   }
 };
