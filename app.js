@@ -1,11 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 8080;
 
-const route = require("./routes/route");
+const productsRoute = require("./routes/products");
+const authRoute = require("./routes/auth");
 
 app.use(express.json());
+app.use(cors());
 
 mongoose.connect(
   "mongodb+srv://dawid:dawid@shop.j0r2p.mongodb.net/Shop?retryWrites=true&w=majority",
@@ -13,19 +16,9 @@ mongoose.connect(
     useNewUrlParser: true,
     useUnifiedTopology: true,
   }
-  );
-  
-  app.use((_, res, next) => {
-    res.setHeader("Content-Type", "application/json");
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,PATCH");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
-    next();
-  });
-  
+);
 
-
-  app.use(route);
-
+app.use(productsRoute);
+app.use("/user", authRoute);
 
 app.listen(port);
