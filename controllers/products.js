@@ -66,21 +66,11 @@ exports.editProduct = (req, res) => {
 
 // user
 
-exports.connectUser = (req, res) => {
-  const id = req.body.id;
-  const user = new User({
-    id: id,
-    transation: [],
-  });
-  user.save();
-  res.status(200).json({ message: "user connected" });
-};
-
 exports.getUserStore = (req, res) => {
-  const id = req.query.id;
-  User.findOne({ id: id })
+  const userId = req.user._id;
+  User.findOne({ _id: userId })
     .then((user) => {
-      return res.status(200).json({ user: user });
+      return res.status(200).json({ user });
     })
     .catch(() => {
       return res.status(400).json({ error: true });
@@ -88,7 +78,7 @@ exports.getUserStore = (req, res) => {
 };
 
 exports.addUserTransation = (req, res) => {
-  const id = req.body.id;
+  const userId = req.user._id;
   const itemTransation = req.body.transation;
 
   let day = new Date().getDate();
@@ -101,19 +91,18 @@ exports.addUserTransation = (req, res) => {
   const date = `${day}-${month}-${year}`;
 
   const transation = {
-    date:date,
+    date: date,
     products: itemTransation,
-  }
-  console.log(transation)
+  };
 
-  User.findOne({ id: id })
+  User.findOne({ _id: userId })
     .then((user) => {
-      user.transations = [...user.transations, transation].filter(e=> e !== []);
+      user.transations = [...user.transations, transation].filter(
+        (e) => e !== []
+      );
       user.date = date;
       user.save().then(() => {
-        return res
-          .status(200)
-          .json({ error: false, message: "successfully added transation" });
+        return res.status(200).json({ transation });
       });
     })
     .catch(() => {
