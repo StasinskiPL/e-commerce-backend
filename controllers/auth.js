@@ -22,8 +22,11 @@ exports.register = async (req, res) => {
   try {
     const saveUser = await user.save();
     const token = jwt.sign({ _id: user._id }, "MY_SECRET_KEY");
-    res.header("auth-token", token);
-    return res.json({ user: saveUser, token });
+    res.cookie("access-token", token, {
+      maxAge: 60 * 60 * 24 * 30 * 1000,
+      httpOnly: true,
+    });
+    return res.json({ user: saveUser });
   } catch (error) {
     return res.status(400).json(error);
   }
@@ -38,7 +41,11 @@ exports.login = async (req, res) => {
   try {
     await user.comparePassword(password);
     const token = jwt.sign({ _id: user._id }, "MY_SECRET_KEY");
-    res.header("auth-token", token).send({ token });
+    res.cookie("access-token", token, {
+      maxAge: 60 * 60 * 24 * 30 * 1000,
+      httpOnly: true,
+    });
+    res.send("LOGGED IN");
   } catch (error) {
     return res.status(400).send({ message: "wrong email or password" });
   }
